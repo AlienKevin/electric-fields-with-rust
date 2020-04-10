@@ -506,6 +506,7 @@ decodeModel =
     }
 
 
+decodeSign : Decoder Sign
 decodeSign =
   Decode.string
     |> Decode.andThen
@@ -519,6 +520,8 @@ decodeSign =
           Decode.fail ("I can't recognize \"" ++ sign ++ "\". It should be either \"Postive\" or \"Negative\"")
     )
 
+
+decodeVector2 : Decoder Vec2
 decodeVector2 =
   Field.require "x" Decode.float <| \x ->
   Field.require "y" Decode.float <| \y ->
@@ -526,6 +529,8 @@ decodeVector2 =
   Decode.succeed <|
     vec2 x y
 
+
+decodeCharge : Decoder Charge
 decodeCharge =
   Field.require "id" Decode.int <| \id ->
   Field.require "sign" decodeSign <| \sign ->
@@ -542,6 +547,8 @@ decodeCharge =
     , r = r
     }
 
+
+decodeField : Decoder Field
 decodeField =
   Field.require "source" decodeCharge <| \source ->
   Field.require "density" Decode.int <| \density ->
@@ -558,6 +565,7 @@ decodeField =
     }
 
 
+decodePoint : Decoder Point
 decodePoint = 
   Decode.map2 Tuple.pair 
     (Decode.index 0 Decode.float) 
@@ -1213,25 +1221,6 @@ either minimum maximum value =
     minimum
   else
     maximum
-
-
-foldlWhile : (a -> b -> (b, Bool)) -> b -> List a -> b
-foldlWhile accumulate initial list =
-  let
-    foldlHelper accumulated aList =
-      case aList of
-        head :: tail ->
-          let
-            (nextAccumulated, break) = accumulate head accumulated
-          in
-          if break then
-            nextAccumulated
-          else
-            foldlHelper nextAccumulated tail
-        [] ->
-          accumulated
-  in
-  foldlHelper initial list
 
 
 subscriptions : Model -> Sub Msg
