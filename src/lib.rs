@@ -92,7 +92,8 @@ fn calculate_field_line(charges: &Vec<Charge>, steps: usize, delta: f64, source_
         [0.0, 0.0] // impossible
     };
     let previous_position: Vector2 = [x, y];
-    let out_of_bounds = x > x_bound || x < 0.0 || y > y_bound || y < 0.0;
+    let tolerance = 100.0;
+    let out_of_bounds = x > x_bound + tolerance || x < -tolerance || y > y_bound + tolerance || y < -tolerance;
     if out_of_bounds {
       Done(line)
     } else {
